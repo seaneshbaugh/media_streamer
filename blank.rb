@@ -2,7 +2,7 @@
 
 class Object
   def blank?
-    respond_to?(:empty?) ? empty? : !self
+  respond_to?(:empty?) ? empty? : !self
   end
 
   def present?
@@ -27,7 +27,7 @@ class FalseClass
 end
 
 class TrueClass
- def blank?
+  def blank?
     false
   end
 end

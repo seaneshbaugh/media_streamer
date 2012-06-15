@@ -1,11 +1,7 @@
-<%= partial 'breadcrumbs', { :breadcrumbs => breadcrumbs(@pwd) } %>
-<div id="pwd">
-	<h1>Listing Contents of <%= @pwd %></h1>
-</div>
 <div id="artists">
-	<ul>
-		<% @directories.each do |directory| %>
-			<li><a href="/<%= File.split(directory).last %>"><%= File.split(directory).last %></a></li>
-		<% end %>
-	</ul>
+  <ul>
+    <% @directories.each do |directory| %>
+      <li><a href="/<%= File.split(directory).last %>"><%= File.split(directory).last %></a></li>
+    <% end %>
+  </ul>
 </div>
