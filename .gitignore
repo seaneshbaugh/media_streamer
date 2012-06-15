@@ -1,0 +1,6 @@
+.bundle
+Gemfile.lock
+.DS_Store
+._*
+.redcar/
+.idea/

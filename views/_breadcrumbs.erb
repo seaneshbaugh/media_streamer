@@ -1,0 +1,11 @@
+<% unless breadcrumbs[0].blank? %>
+	<a href="/"><%= breadcrumbs[0] %></a> /
+
+	<% unless breadcrumbs[1].blank? %>
+		<a href="/<%= breadcrumbs[1] %>"><%= breadcrumbs[1] %></a> /
+
+		<% unless breadcrumbs[2].blank? %>
+			<a href="/<%= breadcrumbs[1] %>/<%= breadcrumbs[2] %>"><%= breadcrumbs[2] %></a>
+		<% end %>
+	<% end %>
+<% end %>

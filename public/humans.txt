@@ -1,0 +1,24 @@
+/* TEAM */
+  Developer: Sean Eshbaugh
+  Site: http://seaneshbaugh.com/
+  Twitter: http://twitter.com/bungoman
+  Contact: sean (at) seaneshbaugh.com
+
+/* THANKS */
+  Yukihiro Matsumoto
+  Joshua Peek
+  Santiago Pastorino
+  José Valim
+  Blake Mizerany
+  Konstantin Haase
+  James Edward Gray II
+  Yehuda Katz
+
+/* SITE */
+  Created On: 2012/06/11
+  Last Updated: 2012/06/14
+  Language: English
+  Doctype: HTML5
+  Lovingly Made In: Geany 0.19
+  Lovingly Made On: Windows 7
+  Lovingly Made With: Ruby, Sinatra, ERB
