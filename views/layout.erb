@@ -11,7 +11,7 @@
   <![endif]-->
 </head>
 <body>
-  <%= partial 'breadcrumbs', { breadcrumbs: breadcrumbs(@pwd) } %>
+  <%= partial 'breadcrumbs', { breadcrumbs: @breadcrumbs } %>
   <div id="pwd">
     <h1>Listing Contents of <%= @pwd %></h1>
   </div>

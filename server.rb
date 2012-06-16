@@ -14,6 +14,8 @@ get '/' do
 
   @directories = get_directories(@pwd)
 
+  add_breadcrumb(@pwd)
+
   erb :index
 end
 
@@ -23,10 +25,14 @@ get '/:artist' do
   else
     @pwd = music_directory
 
+    add_breadcrumb(@pwd)
+
     if File.exists?(File.join(@pwd, params[:artist]))
       @pwd = File.join(@pwd, params[:artist])
 
       @directories = get_directories(@pwd)
+
+      add_breadcrumb(params[:artist])
 
       erb :artist
     else
@@ -41,13 +47,19 @@ get '/:artist/:album' do
   else
     @pwd = music_directory
 
+    add_breadcrumb(@pwd)
+
     if File.exists?(File.join(@pwd, params[:artist]))
       @pwd = File.join(@pwd, params[:artist])
+
+      add_breadcrumb(params[:artist])
 
       if File.exists?(File.join(@pwd, params[:album]))
         @pwd = File.join(@pwd, params[:album])
 
         @files = get_files(@pwd)
+
+        add_breadcrumb(params[:album])
 
         erb :album
       else
@@ -134,14 +146,14 @@ def get_files(pwd)
   (mp3_files + m4a_files).sort
 end
 
-def breadcrumbs(pwd)
-  directories = pwd.split(File::SEPARATOR).map { |x| x == '' ? File::SEPARATOR : x }
+def add_breadcrumb breadcrumb
+  @breadcrumbs ||= []
 
-  directories[1] = File.join(directories[0], directories[1])
+  if breadcrumb.present?
+    @breadcrumbs << breadcrumb
+  end
 
-  directories.shift
-
-  directories
+  @breadcrumbs
 end
 
 helpers do

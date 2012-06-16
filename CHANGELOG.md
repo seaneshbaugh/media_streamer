@@ -1,4 +1,10 @@
+## v0.1.4
+#### 06-15-12
+
+* Simplified and fixed breadcrumbs when music_directory is a path with more than one directory.
+
 ## v0.1.3
+#### 06-15-12
 
 * Added 404 page with suggestion.
 
