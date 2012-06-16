@@ -1,3 +1,7 @@
+## v0.1.3
+
+* Added 404 page with suggestion.
+
 ## v0.1.2
 #### 06-15-12
 
