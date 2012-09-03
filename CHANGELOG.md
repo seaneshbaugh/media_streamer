@@ -1,3 +1,10 @@
+## v0.2.1
+#### 09-03-12
+
+* Now using sinatra-contrib.
+* Settings now load using sinatra/config_file.
+* Added JSON API with sinatra/json.
+
 ## v0.2.0
 #### 09-03-12
 

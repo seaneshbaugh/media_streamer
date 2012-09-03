@@ -3,23 +3,24 @@
 require 'optparse'
 require 'yaml'
 require 'sinatra'
+require 'sinatra/config_file'
+require 'sinatra/json'
+require 'json'
 require 'cgi'
 
 Dir["#{File.dirname(__FILE__)}/lib/*.rb"].sort.each do |path|
   require path
 end
 
+set :json_encoder, :to_json
+
+config_file 'config/settings.yml'
+
 OptionParser.new do |opts|
   opts.on('-p', '--port [PORT]', 'Listen on the specified port.') do |port|
     set :port, port
   end
 end.parse!
-
-application_settings = YAML::load_file('config/settings.yml')[settings.environment]
-
-application_settings.each do |application_setting, value|
-  set application_setting, value
-end
 
 get '/' do
   @pwd = settings.music_directory
@@ -29,6 +30,56 @@ get '/' do
   add_breadcrumb(@pwd)
 
   erb :index
+end
+
+get '/api/v1/' do
+  @pwd = settings.music_directory
+
+  @directories = get_directories(@pwd)
+
+  json :artists => @directories
+end
+
+get '/api/v1/:artist' do
+  if check_blacklist(params[:artist])
+    status 404
+  else
+    @pwd = settings.music_directory
+
+    if File.exists?(File.join(@pwd, params[:artist]))
+      @pwd = File.join(@pwd, params[:artist])
+
+      @directories = get_directories(@pwd)
+
+      json :albums => @directories
+    else
+      status 404
+    end
+  end
+end
+
+get '/api/v1/:artist/:album' do
+  if check_blacklist(params[:artist]) || check_blacklist(params[:album])
+    status 404
+  else
+    @pwd = settings.music_directory
+
+    if File.exists?(File.join(@pwd, params[:artist]))
+      @pwd = File.join(@pwd, params[:artist])
+
+      if File.exists?(File.join(@pwd, params[:album]))
+        @pwd = File.join(@pwd, params[:album])
+
+        @files = get_files(@pwd).delete_if { |song| check_blacklist(song) }
+
+        json :songs => @files.map { |file| file.split('/').last }
+      else
+        status 404
+      end
+    else
+      status 404
+    end
+  end
 end
 
 get '/:artist' do
@@ -149,7 +200,7 @@ end
 
 def get_files(pwd)
   files = []
-22
+
   settings.allowed_file_types.each do |file_type|
     files += Dir[File.join(pwd, "*.#{file_type}")]
   end
