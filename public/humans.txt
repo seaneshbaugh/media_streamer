@@ -16,10 +16,10 @@
 
 /* SITE */
   Created On: 2012/06/11
-  Last Updated: 2012/06/15
+  Last Updated: 2012/09/03
   Language: English
   Doctype: HTML5
-  Lovingly Made In: Geany 0.19 and RubyMine 4.0.3
+  Lovingly Made In: Geany 0.19 and RubyMine 4.5.2
   Lovingly Made On: Windows 7 and OSX 10.7
   Lovingly Made With: Ruby, Sinatra, ERB
   Source Available At: https://github.com/seaneshbaugh/media_streamer

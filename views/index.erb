@@ -1,7 +1,7 @@
 <div id="artists">
   <ul>
     <% @directories.each do |directory| %>
-      <li><a href="/<%= File.split(directory).last %>"><%= File.split(directory).last %></a></li>
+      <li><a href="/<%= directory.split('/').last %>"><%= directory.split('/').last %></a></li>
     <% end %>
   </ul>
 </div>

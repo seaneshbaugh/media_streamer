@@ -1,3 +1,15 @@
+## v0.2.0
+#### 09-03-12
+
+* Added settings file.
+* Music directory moved to settings.
+* File blacklist moved to settings.
+* Allowed file types moved to settings.
+* Added character encoding to settings.
+* Added command line option for listen port.
+* Now using "directory.split('/').last" because it's more clear in its intent.
+* Reverted to 1.8 style Hash rockets because I think they're more clear in their intent.
+
 ## v0.1.4
 #### 06-15-12
 

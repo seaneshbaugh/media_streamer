@@ -4,3 +4,5 @@ Gemfile.lock
 ._*
 .redcar/
 .idea/
+config/settings.yml
+log/*.log

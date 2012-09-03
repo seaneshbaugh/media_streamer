@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 #http://stackoverflow.com/questions/5859561/getting-the-closest-string-match#answer-5859823
 
 module FuzzyMatch
