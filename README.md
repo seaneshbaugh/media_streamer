@@ -6,13 +6,13 @@ Requirements
 ------------
 
 #### Ruby Version
-
-Ruby 1.9.3-p125 or higher (although, any 1.9 version should work).
+Ruby 2.0.0-p247 or higher (although, any 1.9.3 or 2.0.0 version should work).
 
 #### Gems
-
+* activesupport
 * sinatra
 * sinatra-contrib
+* thin
 
 Installation
 ------------
@@ -25,23 +25,33 @@ Usage
 -----
 
 ```ruby
-ruby server.rb
+rackup
 ```
 
-This application defaults to development mode (like all Sinatra applications). To run in production mode do the following: `RAKE_ENV=production ruby server.rb`.
+This application defaults to development mode (like all Sinatra applications). To run in production mode do the following:
+
+```ruby
+RAKE_ENV=production rackup
+```
+
+To run on a different port:
+
+```ruby
+rackup -p 9999
+```
 
 Example settings.yml
 --------------------
 
-Because the settings I use are guaranteed to be different from the settings you will use I've excluded my settings.yml file from the source control. Below are the settings I use:
+Because the settings I use are guaranteed to be different from the settings you will use I've excluded my settings.yml file from source control. Below are some sample settings:
 
     development:
-      music_directory: "/Users/seshbaugh/Music/iTunes/iTunes Media/"
+      music_directory: "/Users/me/Music/"
       allowed_file_types:
         - "mp3"
         - "m4a"
         - "ogg"
-      default_encoding: "shift_jis"
+      default_encoding: "utf-8"
       file_blacklist:
         - "Automatically Add to iTunes"
         - "Automatically Add to iTunes.localized"
@@ -54,14 +64,16 @@ Because the settings I use are guaranteed to be different from the settings you 
         - "mp3"
         - "m4a"
         - "ogg"
-      default_encoding: "shift_jis"
+      default_encoding: "utf-8"
       file_blacklist:
         - "Automatically Add to iTunes"
         - "Automatically Add to iTunes.localized"
         - "Mobile Applications"
         - "Album Artwork"
+      protection:
+        except: :json_csrf
 
-You will obviously want to set the `music_directory` to wherever your music lives. In almost all cases it is best to leave out the `default_encoding` setting or set it to the more sensible "utf-8". I use "shift_jis" because I have lots of files with shift_jis encoded names. For more information about encodings visit [the W3C documentation](http://www.w3.org/TR/html5/the-meta-element.html#charset).
+You will obviously want to set the `music_directory` to wherever your music lives.
 
 For a complete list of Sinatra's available settings go [here](http://www.sinatrarb.com/intro#Available%20Settings).
 
@@ -72,3 +84,4 @@ Notes
 
 * Use this at your own risk.
 * You'll probably need to set up port forwarding for your router.
+* It is highly recommended you keep the robots.txt file in place.

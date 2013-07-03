@@ -1,5 +1,6 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
+gem 'activesupport', :require => 'active_support/all'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'json'
+gem 'thin'

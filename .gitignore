@@ -1,8 +1,5 @@
-.bundle
-Gemfile.lock
 .DS_Store
 ._*
-.redcar/
 .idea/
+*.log
 config/settings.yml
-log/*.log

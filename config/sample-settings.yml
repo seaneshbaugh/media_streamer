@@ -1,0 +1,27 @@
+development:
+  music_directory: "/Users/me/Music/"
+  allowed_file_types:
+    - "mp3"
+    - "m4a"
+    - "ogg"
+  default_encoding: "utf-8"
+  file_blacklist:
+    - "Automatically Add to iTunes"
+    - "Automatically Add to iTunes.localized"
+    - "Mobile Applications"
+    - "Album Artwork"
+
+production:
+  music_directory: "J:/Music/"
+  allowed_file_types:
+    - "mp3"
+    - "m4a"
+    - "ogg"
+  default_encoding: "utf-8"
+  file_blacklist:
+    - "Automatically Add to iTunes"
+    - "Automatically Add to iTunes.localized"
+    - "Mobile Applications"
+    - "Album Artwork"
+  protection:
+    except: :json_csrf

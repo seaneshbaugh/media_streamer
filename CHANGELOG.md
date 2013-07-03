@@ -1,3 +1,19 @@
+## v0.3.0
+#### 07-03-13
+
+* Changed to modular Sinatra app.
+* Removed .rvmrc and replaced with .ruby-version and .ruby-gemset.
+* Bumped Ruby version to 2.0.0-p247.
+* Added active_support dependency since it's just easier that way.
+* Updated readme.
+* Added blacklist check to get_files.
+* Artist, album, and API routes now respond to optional trailing slash.
+* Added base_url helper method.
+* Added URL and API URL to API results.
+* Added favicon.
+* Added empty JavaScript file for later.
+* Added empty CSS file for later.
+
 ## v0.2.1
 #### 09-03-12
 
