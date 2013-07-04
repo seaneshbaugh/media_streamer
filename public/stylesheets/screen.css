@@ -1,1 +1,9 @@
 @charset "utf-8";
+
+.playing {
+    font-weight: bold;
+}
+
+.error {
+    color: #ff0000;
+}

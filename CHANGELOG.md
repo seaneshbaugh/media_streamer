@@ -1,3 +1,9 @@
+## v0.4.0
+#### 07-04-13
+
+* Added HTML5 audio player.
+* Updated readme.
+
 ## v0.3.0
 #### 07-03-13
 

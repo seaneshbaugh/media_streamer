@@ -13,11 +13,12 @@
   Konstantin Haase
   James Edward Gray II
   Yehuda Katz
+  Alain Bryden
   Mark Pilgrim
 
 /* SITE */
   Created On: 2012/06/11
-  Last Updated: 2013/07/03
+  Last Updated: 2013/07/04
   Language: English
   Doctype: HTML5
   Lovingly Made In: RubyMine 5.4.2
