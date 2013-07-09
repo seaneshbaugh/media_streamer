@@ -22,9 +22,9 @@ class MediaStreamer < Sinatra::Base
   get '/' do
     @pwd = settings.music_directory
 
-    @directories = get_directories(@pwd)
-
     add_breadcrumb(@pwd)
+
+    @directories = get_directories(@pwd)
 
     erb :index
   end
@@ -38,17 +38,17 @@ class MediaStreamer < Sinatra::Base
   end
 
   get '/api/v1/:artist/?' do
-    if check_blacklist(params[:artist])
+    @artist = params[:artist]
+
+    if check_blacklist(@artist)
       status 404
     else
-      @pwd = settings.music_directory
+      @pwd = File.join(settings.music_directory, @artist)
 
-      if File.exists?(File.join(@pwd, params[:artist]))
-        @pwd = File.join(@pwd, params[:artist])
-
+      if File.directory?(@pwd)
         @directories = get_directories(@pwd)
 
-        json :albums => @directories.map { |album| { :name => album, :url => "#{base_url}/#{params[:artist]}/#{album}", :api_url => "#{base_url}/api/v1/#{params[:artist]}/#{album}" } }
+        json :artist => { :name => @artist, :url => "#{base_url}/#{@artist}", :albums => @directories.map { |album| { :name => album, :url => "#{base_url}/#{@artist}/#{album}", :api_url => "#{base_url}/api/v1/#{@artist}/#{album}" } } }
       else
         status 404
       end
@@ -56,23 +56,73 @@ class MediaStreamer < Sinatra::Base
   end
 
   get '/api/v1/:artist/:album/?' do
-    if check_blacklist(params[:artist]) || check_blacklist(params[:album])
+    @artist = params[:artist]
+
+    @album = params[:album]
+
+    if check_blacklist(@artist) || check_blacklist(@album)
       status 404
     else
-      @pwd = settings.music_directory
+      @pwd = File.join(settings.music_directory, @artist, @album)
 
-      if File.exists?(File.join(@pwd, params[:artist]))
-        @pwd = File.join(@pwd, params[:artist])
+      if File.directory?(@pwd)
+        @files = get_files(@pwd)
 
-        if File.exists?(File.join(@pwd, params[:album]))
-          @pwd = File.join(@pwd, params[:album])
+        json :album => { :artist => @artist, :title => @album, :url => "#{base_url}/#{@artist}/#{@album}", :albumart => "#{base_url}/#{@artist}/#{@album}/albumart", :songs => @files.map { |file| file.split('/').last }.map { |song| { :name => song, :url => "#{base_url}/#{@artist}/#{@album}/#{song}", :api_url => "#{base_url}/api/v1/#{@artist}/#{@album}/#{song}" } } }
+      else
+        status 404
+      end
+    end
+  end
 
-          @files = get_files(@pwd)
+  get '/api/v1/:artist/:album/:song' do
+    @artist = params[:artist]
 
-          json :songs => @files.map { |file| file.split('/').last }.map { |song| { :name => song, :url => "#{base_url}/#{params[:artist]}/#{params[:album]}/#{song}" } }
-        else
-          status 404
+    @album = params[:album]
+
+    @song = params[:song]
+
+    if check_blacklist(@artist) || check_blacklist(@album) || check_blacklist(@song)
+      status 404
+    else
+      @file_path = File.join(settings.music_directory, @artist, @album, @song)
+
+      if File.file?(@file_path)
+        song = {}
+
+        TagLib::FileRef.open(@file_path) do |file|
+          unless file.null?
+            tag = file.tag
+
+            song[:album] = tag.album
+
+            song[:artist] = tag.artist
+
+            song[:comment] = tag.comment
+
+            song[:genre] = tag.genre
+
+            song[:title] = tag.title
+
+            song[:track] = tag.track
+
+            song[:year] = tag.year
+
+            song[:url] = "#{base_url}/#{@artist}/#{@album}/#{@song}"
+
+            song[:audio_properties] = {}
+
+            song[:audio_properties][:bitrate] = file.audio_properties.bitrate
+
+            song[:audio_properties][:channels] = file.audio_properties.channels
+
+            song[:audio_properties][:length] = file.audio_properties.length
+
+            song[:audio_properties][:sample_rate] = file.audio_properties.sample_rate
+          end
         end
+
+        json :song => song
       else
         status 404
       end
@@ -80,19 +130,21 @@ class MediaStreamer < Sinatra::Base
   end
 
   get '/:artist/?' do
-    if check_blacklist(params[:artist])
+    @artist = params[:artist]
+
+    if check_blacklist(@artist)
       status 404
     else
       @pwd = settings.music_directory
 
       add_breadcrumb(@pwd)
 
-      if File.exists?(File.join(@pwd, params[:artist]))
-        @pwd = File.join(@pwd, params[:artist])
+      @pwd = File.join(@pwd, @artist)
 
+      if File.directory?(@pwd)
         @directories = get_directories(@pwd)
 
-        add_breadcrumb(params[:artist])
+        add_breadcrumb(@artist)
 
         erb :artist
       else
@@ -101,30 +153,71 @@ class MediaStreamer < Sinatra::Base
     end
   end
 
-  get '/:artist/:album/?' do
-    if check_blacklist(params[:artist]) || check_blacklist(params[:album])
+  get '/:artist/:album/albumart' do
+    @artist = params[:artist]
+
+    @album = params[:album]
+
+    if check_blacklist(@artist) || check_blacklist(@album)
       status 404
     else
-      @pwd = settings.music_directory
+      @pwd = File.join(settings.music_directory, @artist, @album)
 
-      add_breadcrumb(@pwd)
+      if File.directory?(@pwd)
+        @files = get_files(@pwd)
 
-      if File.exists?(File.join(@pwd, params[:artist]))
-        @pwd = File.join(@pwd, params[:artist])
+        if @files.present?
+          case @files.first.split('.').last
+            when 'mp3'
+              TagLib::MPEG::File.open(@files.first) do |file|
+                tag = file.id3v2_tag
 
-        add_breadcrumb(params[:artist])
+                cover = tag.frame_list('APIC').first
 
-        if File.exists?(File.join(@pwd, params[:album]))
-          @pwd = File.join(@pwd, params[:album])
+                if cover
+                  content_type cover.mime_type
 
-          @files = get_files(@pwd)
-
-          add_breadcrumb(params[:album])
-
-          erb :album
-        else
-          status 404
+                  cover.picture
+                else
+                  send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+                end
+              end
+            when 'm4a'
+              #TODO: Get album art for M4A files.
+              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+            when 'ogg'
+              #TODO: Get album art for OGG files.
+              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+            else
+              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+          end
         end
+      else
+        status 404
+      end
+    end
+  end
+
+  get '/:artist/:album/?' do
+    @artist = params[:artist]
+
+    @album = params[:album]
+
+    if check_blacklist(@artist) || check_blacklist(@album)
+      status 404
+    else
+      @pwd = File.join(settings.music_directory, @artist, @album)
+
+      if File.directory?(@pwd)
+        add_breadcrumb(settings.music_directory)
+
+        add_breadcrumb(@artist)
+
+        add_breadcrumb(@album)
+
+        @files = get_files(@pwd)
+
+        erb :album
       else
         status 404
       end
@@ -132,25 +225,19 @@ class MediaStreamer < Sinatra::Base
   end
 
   get '/:artist/:album/:song' do
-    if check_blacklist(params[:artist]) || check_blacklist(params[:album]) || check_blacklist(params[:song])
+    @artist = params[:artist]
+
+    @album = params[:album]
+
+    @song = params[:song]
+
+    if check_blacklist(@artist) || check_blacklist(@album) || check_blacklist(@song)
       status 404
     else
-      @pwd = settings.music_directory
+      @file_path = File.join(settings.music_directory, @artist, @album, @song)
 
-      if File.exists?(File.join(@pwd, params[:artist]))
-        @pwd = File.join(@pwd, params[:artist])
-
-        if File.exists?(File.join(@pwd, params[:album]))
-          @pwd = File.join(@pwd, params[:album])
-
-          if File.exists?(File.join(@pwd, params[:song]))
-            send_file File.join(@pwd, params[:song])
-          else
-            status 404
-          end
-        else
-          status 404
-        end
+      if File.file?(@file_path)
+        send_file @file_path
       else
         status 404
       end
@@ -158,16 +245,18 @@ class MediaStreamer < Sinatra::Base
   end
 
   not_found do
+    @artist = @album = @song = nil
+
     @request_path = request.env['REQUEST_PATH'].split('/')
 
     @pwd = settings.music_directory
 
-    if @request_path.length > 2 && File.exists?(File.join(@pwd, CGI::unescape(@request_path[1])))
+    if @request_path.length > 2 && File.directory?(File.join(@pwd, CGI::unescape(@request_path[1])))
       @pwd = File.join(@pwd, CGI::unescape(@request_path[1]))
 
       @artist = CGI::unescape(@request_path[1])
 
-      if @request_path.length > 3 && File.exists?(File.join(@pwd, CGI::unescape(@request_path[2])))
+      if @request_path.length > 3 && File.directory?(File.join(@pwd, CGI::unescape(@request_path[2])))
         @pwd = File.join(@pwd, CGI::unescape(@request_path[2]))
 
         @album = CGI::unescape(@request_path[2])

@@ -1,11 +1,20 @@
+## v0.5.0
+#### 2013/07/09
+
+* Added support for reading media tags ([tag-lib](http://taglib.github.io/) now required).
+* Added album art.
+* Refactored a bunch of stuff.
+* Major updates to API. Kept at v1 because nothing is using it yet.
+* Now using File.directory? and File.file? instead of File.exists?.
+
 ## v0.4.0
-#### 07-04-13
+#### 2013/07/04
 
 * Added HTML5 audio player.
 * Updated readme.
 
 ## v0.3.0
-#### 07-03-13
+#### 2013/07/03
 
 * Changed to modular Sinatra app.
 * Removed .rvmrc and replaced with .ruby-version and .ruby-gemset.
@@ -21,14 +30,14 @@
 * Added empty CSS file for later.
 
 ## v0.2.1
-#### 09-03-12
+#### 2012/09/03
 
 * Now using sinatra-contrib.
 * Settings now load using sinatra/config_file.
 * Added JSON API with sinatra/json.
 
 ## v0.2.0
-#### 09-03-12
+#### 2012/09/03
 
 * Added settings file.
 * Music directory moved to settings.
@@ -40,42 +49,42 @@
 * Reverted to 1.8 style Hash rockets because I think they're more clear in their intent.
 
 ## v0.1.4
-#### 06-15-12
+#### 2012/06/15
 
 * Simplified and fixed breadcrumbs when music_directory is a path with more than one directory.
 
 ## v0.1.3
-#### 06-15-12
+#### 2012/06/15
 
 * Added 404 page with suggestion.
 
 ## v0.1.2
-#### 06-15-12
+#### 2012/06/15
 
 * Added gemfile and changelog.
 * Fixed tabs to be double spaces.
 * Now uses Ruby 1.9 hash syntax.
 
 ## v0.1.1
-#### 06-14-12
+#### 2012/06/14
 
 * Finally got around to putting this under source control.
 * Added readme and rvmrc.
 
 ## v0.1.0
-#### 06-13-12
+#### 2012/06/13
 
 * File/Directory names are now served as UTF-8 instead of ASCII-8BIT.
 * Now requires Ruby 1.9.3p125 or higher (although, any 1.9 version should work).
 
 ## v0.0.2
-#### 06-12-12
+#### 2012/06/12
 
 * Navigation breadcrumbs added.
 * File/Directory blacklist added.
 * Changes to behavior of how directories are found.
 
 ## v0.0.1
-#### 06-11-12
+#### 2012/06/11
 
 * Initial release.

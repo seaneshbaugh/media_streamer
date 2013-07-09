@@ -7,3 +7,40 @@
 .error {
     color: #ff0000;
 }
+
+#pwd {
+    word-break: break-all;
+}
+
+#album {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+#album-art {
+    float: left;
+    height: 250px;
+    line-height: 250px;
+    text-align: center;
+    vertical-align: middle;
+    width: 250px;
+}
+
+#album-art img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+#songs {
+    coumn-width: 200px;
+    -moz-column-width: 200px;
+    -webkit-column-width: 200px;
+    float: left;
+    height: 250px;
+}
+
+#songs ul {
+    height: 230px;
+    margin: 0;
+    padding: 10px 0 10px 40px;
+}
