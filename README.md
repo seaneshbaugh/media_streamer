@@ -14,6 +14,9 @@ Ruby 2.0.0-p247 or higher (although, any 1.9.3 or 2.0.0 version should work).
 * sinatra-contrib
 * thin
 
+#### Libraries
+* [TagLib](http://taglib.github.io/)
+
 Installation
 ------------
 

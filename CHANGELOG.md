@@ -7,7 +7,7 @@
 ## v0.5.0
 #### 2013/07/09
 
-* Added support for reading media tags ([tag-lib](http://taglib.github.io/) now required).
+* Added support for reading media tags ([TagLib](http://taglib.github.io/) now required).
 * Added album art.
 * Refactored a bunch of stuff.
 * Major updates to API. Kept at v1 because nothing is using it yet.
