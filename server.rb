@@ -60,7 +60,7 @@ class MediaStreamer < Sinatra::Base
 
     @album = params[:album]
 
-    if check_blacklist(@artist) || check_blacklist(@album)
+    if check_blacklist(@artist, @album)
       status 404
     else
       @pwd = File.join(settings.music_directory, @artist, @album)
@@ -82,7 +82,7 @@ class MediaStreamer < Sinatra::Base
 
     @song = params[:song]
 
-    if check_blacklist(@artist) || check_blacklist(@album) || check_blacklist(@song)
+    if check_blacklist(@artist, @album, @song)
       status 404
     else
       @file_path = File.join(settings.music_directory, @artist, @album, @song)
@@ -158,7 +158,7 @@ class MediaStreamer < Sinatra::Base
 
     @album = params[:album]
 
-    if check_blacklist(@artist) || check_blacklist(@album)
+    if check_blacklist(@artist, @album)
       status 404
     else
       @pwd = File.join(settings.music_directory, @artist, @album)
@@ -203,7 +203,7 @@ class MediaStreamer < Sinatra::Base
 
     @album = params[:album]
 
-    if check_blacklist(@artist) || check_blacklist(@album)
+    if check_blacklist(@artist, @album)
       status 404
     else
       @pwd = File.join(settings.music_directory, @artist, @album)
@@ -231,7 +231,7 @@ class MediaStreamer < Sinatra::Base
 
     @song = params[:song]
 
-    if check_blacklist(@artist) || check_blacklist(@album) || check_blacklist(@song)
+    if check_blacklist(@artist, @album, @song)
       status 404
     else
       @file_path = File.join(settings.music_directory, @artist, @album, @song)
@@ -294,8 +294,8 @@ class MediaStreamer < Sinatra::Base
 
   protected
 
-  def check_blacklist(directory_or_file_name)
-    !settings.file_blacklist.index(directory_or_file_name).nil?
+  def check_blacklist(*directory_or_file_names)
+    (settings.file_blacklist & directory_or_file_names.flatten).length != 0
   end
 
   def get_directories(pwd)
@@ -309,7 +309,7 @@ class MediaStreamer < Sinatra::Base
       files += Dir[File.join(pwd, "*.#{file_type}")]
     end
 
-    files.delete_if { |file| check_blacklist(file) }.sort
+    files.delete_if { |file| check_blacklist(file.split('/').last) }.sort
   end
 
   def add_breadcrumb(breadcrumb)

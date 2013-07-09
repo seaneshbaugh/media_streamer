@@ -15,13 +15,16 @@
   Yehuda Katz
   Alain Bryden
   Mark Pilgrim
+  Scott Wheeler
+  Lukáš Lalinský
+  Robin Stocker
 
 /* SITE */
   Created On: 2012/06/11
   Last Updated: 2013/07/09
   Language: English
   Doctype: HTML5
-  Lovingly Made In: RubyMine 5.4.2
+  Lovingly Made In: RubyMine 5.4.3.2.1
   Lovingly Made On: OSX 10.7.5
   Lovingly Made With: Ruby, Sinatra, ERB
   Source Available At: https://github.com/seaneshbaugh/media_streamer

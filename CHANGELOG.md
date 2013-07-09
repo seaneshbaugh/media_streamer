@@ -1,3 +1,9 @@
+## v0.5.1
+#### 2013/07/09
+
+* Cleaned up check_blacklist to allow an arbitrary number of parameters.
+* Fixed bug in call to check_blacklist in get_files.
+
 ## v0.5.0
 #### 2013/07/09
 
