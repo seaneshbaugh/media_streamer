@@ -1,5 +1,9 @@
 @charset "utf-8";
 
+a {
+    color: #0000ee;
+}
+
 .playing {
     font-weight: bold;
 }

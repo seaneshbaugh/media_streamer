@@ -17,7 +17,7 @@ onReady(function() {
 
             for (var i = 0; i < songLinks.length; ++i) {
                 songLinks[i].addEventListener("click", function(event) {
-                    var songLink;
+                    var songLink, onEndedHandler;
 
                     event.preventDefault();
 
@@ -32,9 +32,17 @@ onReady(function() {
 
                         audio.setAttribute("src", songLink.href);
 
-                        audio.addEventListener("ended", function() {
+                        onEndedHandler = function() {
                             songLink.classList.remove("playing");
-                        });
+
+                            audio.removeEventListener("ended", onEndedHandler, false);
+
+                            if (songLink.parentNode.nextElementSibling && songLink.parentNode.nextElementSibling.querySelector("a")) {
+                                songLink.parentNode.nextElementSibling.querySelector("a").click();
+                            }
+                        };
+
+                        audio.addEventListener("ended", onEndedHandler, false);
                     } else {
                         songLink.classList.add("error");
                     }

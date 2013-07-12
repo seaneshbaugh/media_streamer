@@ -1,3 +1,8 @@
+## v0.5.2
+#### 2013/07/12
+
+* Made it so songs now auto-advance to the next track.
+
 ## v0.5.1
 #### 2013/07/09
 
