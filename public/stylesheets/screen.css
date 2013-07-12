@@ -48,3 +48,9 @@ a {
     margin: 0;
     padding: 10px 0 10px 40px;
 }
+
+label[for='loop'] {
+    display: block;
+    margin: 10px 0;
+    width: 56px;
+}

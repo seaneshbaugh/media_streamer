@@ -1,3 +1,9 @@
+## v0.5.3
+#### 2013/07/12
+
+* Added song looping control.
+* Volume now remembered across page loads.
+
 ## v0.5.2
 #### 2013/07/12
 
