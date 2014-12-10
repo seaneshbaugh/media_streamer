@@ -1,5 +1,5 @@
 onReady(function() {
-    var songLinks, audio, volume, loop;
+    var songLinks, audio, volume, loop, randomOff, randomSong, randomAlbum;
 
     audio = document.createElement("audio");
 
@@ -25,7 +25,7 @@ onReady(function() {
 
             document.querySelectorAll("body")[0].appendChild(audio);
 
-            for (var i = 0; i < songLinks.length; ++i) {
+            for (var i = 0; i < songLinks.length; i += 1) {
                 songLinks[i].addEventListener("click", function(event) {
                     var songLink, onEndedHandler;
 
@@ -47,13 +47,21 @@ onReady(function() {
 
                             audio.removeEventListener("ended", onEndedHandler, false);
 
-                            if (songLink.parentNode.nextElementSibling && songLink.parentNode.nextElementSibling.querySelector("a")) {
-                                songLink.parentNode.nextElementSibling.querySelector("a").click();
+                            if (randomSong && randomSong.checked) {
+                                randomAlbumJump(true);
                             } else {
-                                if (loop && loop.checked) {
-                                    songLinks[0].click();
-                                }
-                            }
+                                if (songLink.parentNode.nextElementSibling && songLink.parentNode.nextElementSibling.querySelector("a")) {
+                                    songLink.parentNode.nextElementSibling.querySelector("a").click();
+                                } else {
+                                    if (randomAlbum && randomAlbum.checked) {
+                                        randomAlbumJump(false);
+                                    } else {
+                                        if (loop && loop.checked) {
+                                            songLinks[0].click();
+                                        }
+                                    }
+                                 }
+                             }
                         };
 
                         audio.addEventListener("ended", onEndedHandler, false);
@@ -61,6 +69,18 @@ onReady(function() {
                         songLink.classList.add("error");
                     }
                 }, false);
+            }
+
+            if (getCookie("random-song-jump")) {
+                removeCookie("random-song-jump");
+
+                songLinks[Math.floor(Math.random() * songLinks.length)].click();
+            }
+
+            if (getCookie("random-album-jump")) {
+                removeCookie("random-album-jump");
+
+                songLinks[0].click();
             }
         }
     }
@@ -78,6 +98,40 @@ onReady(function() {
             } else {
                 removeCookie("media-streamer-loop");
             }
+        }, false);
+    }
+
+    randomOff = document.getElementById("random-off");
+
+    randomSong = document.getElementById("random-song");
+
+    randomAlbum = document.getElementById("random-album");
+
+    if (randomOff && randomSong && randomAlbum) {
+        if (getCookie("media-streamer-random-song")) {
+            randomSong.checked = true;
+        } else {
+            if (getCookie("media-streamer-random-album")) {
+                randomAlbum.checked = true;
+            }
+        }
+
+        randomOff.addEventListener("click", function() {
+            removeCookie("media-streamer-random-song");
+
+            removeCookie("media-streamer-random-album");
+        }, false);
+
+        randomSong.addEventListener("click", function() {
+            setCookie("media-streamer-random-song", true);
+
+            removeCookie("media-streamer-random-album");
+        }, false);
+
+        randomAlbum.addEventListener("click", function() {
+            setCookie("media-streamer-random-album", true);
+
+            removeCookie("media-streamer-random-song");
         }, false);
     }
 });
@@ -141,6 +195,62 @@ function removeCookie(cookieName) {
     setCookie(cookieName, "", -1);
 
     return "";
+}
+
+function randomAlbumJump(playSong) {
+    var artistsApiRequest, artsitsData, artistApiRequest, artistData;
+
+    artistsApiRequest = new XMLHttpRequest();
+
+    artistsApiRequest.open("GET", "/api/v1", true)
+
+    artistsApiRequest.onload = function() {
+        var nextArtistUrl;
+
+        if (artistsApiRequest.status >= 200 && artistsApiRequest.status < 400) {
+            artsitsData = JSON.parse(artistsApiRequest.responseText);
+
+            nextArtistUrl = artsitsData.artists[Math.floor(Math.random() * artsitsData.artists.length)].api_url;
+
+            artistApiRequest = new XMLHttpRequest();
+
+            artistApiRequest.open("GET", nextArtistUrl);
+
+            artistApiRequest.onload = function() {
+                var nextAlbumUrl;
+
+                if (artistApiRequest.status >= 200 && artistApiRequest.status < 400) {
+                    artistData = JSON.parse(artistApiRequest.responseText);
+
+                    nextAlbumUrl = artistData.artist.albums[Math.floor(Math.random() * artistData.artist.albums.length)].url;
+
+                    if (playSong) {
+                        setCookie("random-song-jump", true);
+                    } else {
+                        setCookie("random-album-jump", true);
+                    }
+
+                    window.location = nextAlbumUrl;
+                } else {
+                    console.log("Error retrieving albums.")
+                }
+            };
+
+            artistApiRequest.onerror = function() {
+                console.log("Error retrieving albums.")
+            }
+
+            artistApiRequest.send();
+        } else {
+            console.log("Error retrieving artists.");
+        }
+    };
+
+    artistsApiRequest.onerror = function() {
+        console.log("Error retrieving artists.");
+    };
+
+    artistsApiRequest.send();
 }
 
 function onReady(completed) {
