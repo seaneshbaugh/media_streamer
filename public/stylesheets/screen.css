@@ -54,3 +54,7 @@ label[for='loop'] {
     margin: 10px 0;
     width: 56px;
 }
+
+#skip-random {
+  display: none;
+}

@@ -1,5 +1,5 @@
 onReady(function() {
-    var songLinks, audio, volume, loop, randomOff, randomSong, randomAlbum;
+    var songLinks, audio, volume, loop, randomOff, randomSong, randomAlbum, skipRandom;
 
     audio = document.createElement("audio");
 
@@ -120,19 +120,49 @@ onReady(function() {
             removeCookie("media-streamer-random-song");
 
             removeCookie("media-streamer-random-album");
+
+            if (skipRandom) {
+                skipRandom.setAttribute("style", "display: none;");
+            }
         }, false);
 
         randomSong.addEventListener("click", function() {
             setCookie("media-streamer-random-song", true);
 
             removeCookie("media-streamer-random-album");
+
+            if (skipRandom) {
+                skipRandom.setAttribute("style", "display: inline;");
+            }
         }, false);
 
         randomAlbum.addEventListener("click", function() {
             setCookie("media-streamer-random-album", true);
 
             removeCookie("media-streamer-random-song");
+
+            if (skipRandom) {
+                skipRandom.setAttribute("style", "display: inline;");
+            }
         }, false);
+    }
+
+    skipRandom = document.getElementById("skip-random");
+
+    if (skipRandom) {
+        skipRandom.addEventListener("click", function() {
+            if (randomSong && randomSong.checked) {
+                randomAlbumJump(true);
+            } else {
+                if (randomAlbum && randomAlbum.checked) {
+                    randomAlbumJump(false);
+                }
+            }
+        }, false);
+
+        if ((randomSong && randomSong.checked) || (randomAlbum && randomAlbum.checked)) {
+            skipRandom.setAttribute("style", "display: inline;");
+        }
     }
 });
 
