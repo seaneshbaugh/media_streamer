@@ -1,3 +1,13 @@
+## v0.5.5
+#### 2014/12/10
+
+* Added skip button for random playback.
+
+## v0.5.4
+#### 2014/12/09
+
+* Added random song and album playback.
+
 ## v0.5.3
 #### 2013/07/12
 
