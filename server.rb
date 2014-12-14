@@ -288,6 +288,10 @@ class MediaStreamer < Sinatra::Base
     def base_url
       @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     end
+
+    def make_path(*parts)
+      "/#{parts.join('/')}".gsub('#', '%23')
+    end
   end
 
   run! if app_file == $0

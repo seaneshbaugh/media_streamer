@@ -3,7 +3,7 @@
     <% if index == 0 %>
       <a href="/"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
     <% else %>
-      <a href="/<%= breadcrumbs[1..index].join('/') %>"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
+      <a href="<%= make_path(*breadcrumbs[1..index]) %>"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
     <% end %>
   <% end %>
 </div>

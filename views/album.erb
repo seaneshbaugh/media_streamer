@@ -1,11 +1,11 @@
 <div id="album">
   <div id="album-art">
-    <img src="/<%= params[:artist] %>/<%= params[:album] %>/albumart">
+    <img src="<%= make_path(@artist, @album, 'albumart') %>">
   </div>
   <div id="songs">
     <ul>
       <% @files.each do |file| %>
-        <li><a href="/<%= params[:artist] %>/<%= params[:album] %>/<%= file.split('/').last %>"><%= file.split('/').last %></a></li>
+        <li><a href="<%= make_path(@artist, @album, file.split('/').last) %>"><%= file.split('/').last %></a></li>
       <% end %>
     </ul>
   </div>
