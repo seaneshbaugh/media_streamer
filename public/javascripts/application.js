@@ -4,7 +4,7 @@ onReady(function() {
     audio = document.createElement("audio");
 
     if (!!audio.canPlayType) {
-        songLinks = document.querySelectorAll("#songs ul li a");
+        songLinks = document.querySelectorAll("#songs li a");
 
         if (songLinks && songLinks.length > 0) {
             audio.setAttribute("id", "audio-player");
@@ -23,7 +23,7 @@ onReady(function() {
                 setCookie("media-streamer-volume", audio.volume);
             });
 
-            document.querySelectorAll("body")[0].appendChild(audio);
+            document.getElementById("audio-container").appendChild(audio);
 
             for (var i = 0; i < songLinks.length; i += 1) {
                 songLinks[i].addEventListener("click", function(event) {
@@ -232,7 +232,7 @@ function randomAlbumJump(playSong) {
 
     artistsApiRequest = new XMLHttpRequest();
 
-    artistsApiRequest.open("GET", "/api/v1", true)
+    artistsApiRequest.open("GET", "/api/v1", true);
 
     artistsApiRequest.onload = function() {
         var nextArtistUrl;
@@ -262,22 +262,22 @@ function randomAlbumJump(playSong) {
 
                     window.location = nextAlbumUrl;
                 } else {
-                    console.log("Error retrieving albums.")
+                    console.error("Error retrieving albums: " + artistApiRequest.statusText);
                 }
             };
 
             artistApiRequest.onerror = function() {
-                console.log("Error retrieving albums.")
+                console.error("Error retrieving albums: " + artistApiRequest.statusText);
             }
 
             artistApiRequest.send();
         } else {
-            console.log("Error retrieving artists.");
+            console.error("Error retrieving artists: " + artistsApiRequest.statusText);
         }
     };
 
     artistsApiRequest.onerror = function() {
-        console.log("Error retrieving artists.");
+        console.error("Error retrieving artists " + artistsApiRequest.statusText);
     };
 
     artistsApiRequest.send();

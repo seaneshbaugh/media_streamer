@@ -1,9 +1,9 @@
 <div id="breadcrumbs">
   <% breadcrumbs.each_with_index do |breadcrumb, index| %>
     <% if index == 0 %>
-      <a href="/"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
+      <a href="/" class="breadcrumb"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
     <% else %>
-      <a href="<%= make_path(*breadcrumbs[1..index]) %>"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
+      <a href="<%= make_path(*breadcrumbs[1..index]) %>" class="breadcrumb"><%= breadcrumb.gsub(/\/$/, '') %></a> <%= (index != breadcrumbs.length - 1) ? '/' : '' %>
     <% end %>
   <% end %>
 </div>

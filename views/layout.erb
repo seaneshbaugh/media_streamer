@@ -15,8 +15,18 @@
   <link href="/humans.txt" rel="author">
 </head>
 <body>
-  <%= partial 'breadcrumbs', { :breadcrumbs => @breadcrumbs } %>
-  <h1 id="pwd">Listing Contents of <%= @pwd %></h1>
-  <%= yield %>
+  <div class="container">
+    <div class="row">
+      <div class="twelve columns">
+        <%= partial 'breadcrumbs', { breadcrumbs: @breadcrumbs } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="twelve columns">
+        <h1 id="pwd">Listing Contents of <%= @pwd %></h1>
+      </div>
+    </div>
+    <%= yield %>
+  </div>
 </body>
 </html>

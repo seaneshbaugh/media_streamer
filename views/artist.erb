@@ -1,7 +1,11 @@
-<div id="albums">
-  <ul>
-    <% @directories.each do |directory| %>
-      <li><a href="<%= make_path(@artist, directory.split('/').last) %>"><%= directory.split('/').last %></a></li>
-    <% end %>
-  </ul>
+<div class="row">
+  <div class="twelve columns">
+    <ul id="albums">
+      <% @directories.each do |directory| %>
+        <li class="album">
+          <a href="<%= make_path(@artist, directory.split('/').last) %>"><%= directory.split('/').last %></a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </div>

@@ -1,22 +1,32 @@
-<div id="album">
-  <div id="album-art">
+<div id="album" class="row">
+  <div id="album-art" class="three columns">
     <img src="<%= make_path(@artist, @album, 'albumart') %>">
   </div>
-  <div id="songs">
-    <ul>
+  <div class="nine columns">
+    <ul id="songs">
       <% @files.each do |file| %>
-        <li><a href="<%= make_path(@artist, @album, file.split('/').last) %>"><%= file.split('/').last %></a></li>
+        <li class="song">
+          <a href="<%= make_path(@artist, @album, file.split('/').last) %>"><%= file.split('/').last %></a>
+        </li>
       <% end %>
     </ul>
   </div>
 </div>
-<div>
-  <label for="loop"><input type="checkbox" id="loop"> Loop</label>
+<div class="row">
+  <div id="audio-container" class="twelve columns"></div>
 </div>
-<div>
-  Random
-  <label for="random-off"><input id="random-off" name="random" type="radio" checked> Off</label>
-  <label for="random-song"><input id="random-song" name="random" type="radio"> Song</label>
-  <label for="random-album"><input id="random-album" name="random" type="radio"> Album</label>
-  <button id="skip-random">Skip >></button>
+<div id="controls" clas="row">
+  <div class="two columns">
+    <label for="loop"><input type="checkbox" id="loop"> Loop</label>
+  </div>
+  <div class="ten columns">
+    Random
+    <label for="random-off"><input id="random-off" name="random" type="radio" checked> Off</label>
+    <label for="random-song"><input id="random-song" name="random" type="radio"> Song</label>
+    <label for="random-album"><input id="random-album" name="random" type="radio"> Album</label>
+    <button id="skip-random">Skip >></button>
+  </div>
+</div>
+<div class="row">
+
 </div>
