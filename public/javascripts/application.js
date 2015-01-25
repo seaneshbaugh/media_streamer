@@ -172,7 +172,7 @@ function getFormat(extension) {
         "ogg": "audio/ogg; codecs=\"vorbis\"",
         "m4a": "audio/mp4; codecs=\"mp4a.40.2\"",
         "wav": "audio/wav; codecs=\"1\""
-    }[extension];
+    }[extension.toLowerCase()];
 }
 
 function getCookie(cookieName) {
