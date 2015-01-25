@@ -595,6 +595,10 @@ ul li {
   margin-bottom: 2.0rem;
 }
 
+#songs .song .playing {
+  font-weight: bold;
+}
+
 #audio-container audio {
   display: block;
   margin-bottom: 2.0rem;
