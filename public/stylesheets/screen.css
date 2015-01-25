@@ -624,6 +624,11 @@ ul li {
     column-width: 50%;
     -moz-column-width: 50%;
     -webkit-column-width: 50%;
+    column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+    -ms-column-break-inside: avoid;
+    -o-column-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
   }
 }
 
