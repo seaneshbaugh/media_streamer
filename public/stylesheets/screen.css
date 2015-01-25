@@ -624,6 +624,9 @@ ul li {
     column-width: 50%;
     -moz-column-width: 50%;
     -webkit-column-width: 50%;
+  }
+
+  #songs .song {
     column-break-inside: avoid;
     -moz-column-break-inside: avoid;
     -ms-column-break-inside: avoid;
