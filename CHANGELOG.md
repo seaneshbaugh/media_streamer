@@ -1,3 +1,14 @@
+## v0.6.1
+#### 2015/01/25
+
+* Fixed bug where files with a capital letter in their extension could not be played.
+
+## v0.6.0
+#### 2015/01/25
+
+* Made the layout responsive and less prone to weirdness.
+* Now using [Skeleton](http://getskeleton.com/) for base styles.
+
 ## v0.5.5
 #### 2014/12/10
 
