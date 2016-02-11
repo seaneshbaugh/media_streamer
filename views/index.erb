@@ -3,7 +3,7 @@
     <ul id="artists">
       <% @directories.each do |directory| %>
         <li class="artist">
-          <a href="<%= make_path(directory.split('/').last) %>"><%= directory.split('/').last %></a>
+          <a href="<%= make_path(directory.split('/').last) %>"><%= directory.split('/').last %></a> (<%= (@genres[directory.split('/').last] || '').strip %>)
         </li>
       <% end %>
     </ul>

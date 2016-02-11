@@ -43,6 +43,8 @@ onReady(function() {
                         audio.setAttribute("src", songLink.href);
 
                         onEndedHandler = function() {
+                            var nextListItem, nextSongLink;
+
                             songLink.classList.remove("playing");
 
                             audio.removeEventListener("ended", onEndedHandler, false);
@@ -50,8 +52,14 @@ onReady(function() {
                             if (randomSong && randomSong.checked) {
                                 randomAlbumJump(true);
                             } else {
-                                if (songLink.parentNode.nextElementSibling && songLink.parentNode.nextElementSibling.querySelector("a")) {
-                                    songLink.parentNode.nextElementSibling.querySelector("a").click();
+                                nextListItem = songLink.parentNode.nextElementSibling;
+
+                                if (nextListItem) {
+                                    nextSongLink = nextListItem.querySelector("a");
+
+                                    if (nextSongLink) {
+                                        nextSongLink.click();
+                                    }
                                 } else {
                                     if (randomAlbum && randomAlbum.checked) {
                                         randomAlbumJump(false);

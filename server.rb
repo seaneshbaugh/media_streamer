@@ -26,6 +26,8 @@ class MediaStreamer < Sinatra::Base
 
     @directories = get_directories(@pwd)
 
+    read_genre_cache
+
     erb :index
   end
 
@@ -34,7 +36,24 @@ class MediaStreamer < Sinatra::Base
 
     @directories = get_directories(@pwd)
 
-    json :artists => @directories.map { |artist| { :name => artist, :url => "#{base_url}#{artist}", :api_url => "#{base_url}/api/v1/#{artist}" } }
+    read_genre_cache
+
+    artists = @directories.map do |artist|
+      {
+        name: artist,
+        genre: @genres[artist.split('/').last] || nil,
+        url: "#{base_url}/#{artist}",
+        api_url: "#{base_url}/api/v1/#{artist}"
+      }
+    end
+
+    content_type :json
+
+    if params[:p] || params[:pretty]
+      JSON.pretty_generate(artists: artists)
+    else
+      { artists: artists }.to_json
+    end
   end
 
   get '/api/v1/:artist/?' do
@@ -48,7 +67,35 @@ class MediaStreamer < Sinatra::Base
       if File.directory?(@pwd)
         @directories = get_directories(@pwd)
 
-        json :artist => { :name => @artist, :url => "#{base_url}/#{@artist}", :albums => @directories.map { |album| { :name => album, :url => "#{base_url}/#{@artist}/#{album}", :api_url => "#{base_url}/api/v1/#{@artist}/#{album}" } } }
+        artist_name = nil
+
+        albums = @directories.map do |album|
+          first_file = get_files(File.join(settings.music_directory, @artist, album)).first
+
+          first_file_tag = get_tags(first_file)
+
+          artist_name = first_file_tag[:artist] unless artist_name
+
+          {
+            name: first_file_tag[:album],
+            url: "#{base_url}/#{@artist}/#{album}",
+            api_url: "#{base_url}/api/v1/#{@artist}/#{album}"
+          }
+        end
+
+        artist = {
+          name: artist_name,
+          url: "#{base_url}/#{@artist}",
+          albums: albums
+        }
+
+        content_type :json
+
+        if params[:p] || params[:pretty]
+          JSON.pretty_generate(artist: artist)
+        else
+          { artist: artist }.to_json
+        end
       else
         status 404
       end
@@ -68,7 +115,27 @@ class MediaStreamer < Sinatra::Base
       if File.directory?(@pwd)
         @files = get_files(@pwd)
 
-        json :album => { :artist => @artist, :title => @album, :url => "#{base_url}/#{@artist}/#{@album}", :albumart => "#{base_url}/#{@artist}/#{@album}/albumart", :songs => @files.map { |file| file.split('/').last }.map { |song| { :name => song, :url => "#{base_url}/#{@artist}/#{@album}/#{song}", :api_url => "#{base_url}/api/v1/#{@artist}/#{@album}/#{song}" } } }
+        songs = @files.map do |file|
+          file_name = file.split('/').last
+
+          get_tags(file).merge(url: "#{base_url}/#{@artist}/#{@album}/#{file_name}", api_url: "#{base_url}/api/v1/#{@artist}/#{@album}/#{file_name}")
+        end
+
+        album = {
+          artist: songs.first[:artist],
+          title: songs.first[:album],
+          url: "#{base_url}/#{@artist}/#{@album}",
+          albumart: "#{base_url}/#{@artist}/#{@album}/albumart",
+          songs: songs
+        }
+
+        content_type :json
+
+        if params[:p] || params[:pretty]
+          JSON.pretty_generate(album: album)
+        else
+          { album: album }.to_json
+        end
       else
         status 404
       end
@@ -88,41 +155,15 @@ class MediaStreamer < Sinatra::Base
       @file_path = File.join(settings.music_directory, @artist, @album, @song)
 
       if File.file?(@file_path)
-        song = {}
+        song = get_tags(@file_path).merge(url: "#{base_url}/#{@artist}/#{@album}/#{@song}")
 
-        TagLib::FileRef.open(@file_path) do |file|
-          unless file.null?
-            tag = file.tag
+        content_type :json
 
-            song[:album] = tag.album
-
-            song[:artist] = tag.artist
-
-            song[:comment] = tag.comment
-
-            song[:genre] = tag.genre
-
-            song[:title] = tag.title
-
-            song[:track] = tag.track
-
-            song[:year] = tag.year
-
-            song[:url] = "#{base_url}/#{@artist}/#{@album}/#{@song}"
-
-            song[:audio_properties] = {}
-
-            song[:audio_properties][:bitrate] = file.audio_properties.bitrate
-
-            song[:audio_properties][:channels] = file.audio_properties.channels
-
-            song[:audio_properties][:length] = file.audio_properties.length
-
-            song[:audio_properties][:sample_rate] = file.audio_properties.sample_rate
-          end
+        if params[:p] || params[:pretty]
+          JSON.pretty_generate(song: song)
+        else
+          { song: song }.to_json
         end
-
-        json :song => song
       else
         status 404
       end
@@ -324,5 +365,132 @@ class MediaStreamer < Sinatra::Base
     end
 
     @breadcrumbs
+  end
+
+  def read_genre_cache
+    genre_cache_file_path = File.join('tmp', 'genres.txt')
+
+    if File.file?(genre_cache_file_path)
+      lines = File.readlines(genre_cache_file_path, encoding: 'UTF-8').reject(&:empty?)
+
+      puts lines.length
+      puts @directories.length
+
+      if lines.length == @directories.length
+        @genres = {}
+
+        lines.each do |line|
+          artist, genre = line.split(' -:-:- ')
+
+          @genres[artist] = genre.present? ? genre.chomp : 'Unknown'
+        end
+      else
+        # lines.each do |line|
+        #   artist, genre = line.split(' -:-:- ')
+        #
+        #   unless @directories.include?(artist)
+        #     puts "#{artist} is missing!"
+        #   end
+        # end
+        #
+        # artists = lines.map { |line| line.split(' -:-:- ').first }
+        #
+        # @directories.each do |directory|
+        #   unless artists.include?(directory)
+        #     puts "#{directory} is missing!"
+        #   end
+        # end
+
+        cache_genres(genre_cache_file_path)
+      end
+    else
+      cache_genres(genre_cache_file_path)
+    end
+  end
+
+  def cache_genres(genre_cache_file_path)
+    directory, filename = File.split(genre_cache_file_path)
+
+    File.open(File.join(FileUtils.mkdir_p(directory).first, filename), 'w+') do |genre_cache_file|
+      genres = {}
+
+      @directories.each do |artist|
+        puts artist
+
+        album = get_directories(File.join(settings.music_directory, artist)).first
+
+        if album
+          puts album
+
+          first_song = get_files(File.join(settings.music_directory, artist, album)).first
+
+          if first_song
+            puts first_song
+
+            TagLib::FileRef.open(first_song) do |file|
+              unless file.null?
+                tag = file.tag
+
+                puts tag.genre
+
+                genres[artist] = tag.genre
+
+                genre_cache_file.puts "#{artist} -:-:- #{tag.genre}"
+              end
+            end
+          else
+            genre_cache_file.puts "#{artist} -:-:- Unknown"
+          end
+        else
+          genre_cache_file.puts "#{artist} -:-:- Unknown"
+        end
+      end
+
+      @genres = genres
+    end
+  end
+
+  def get_tags(file_path)
+    return {} unless File.file?(file_path)
+
+    return {} unless file_path.split('.').last.downcase == 'mp3'
+
+    song = {}
+
+    TagLib::MPEG::File.open(file_path) do |file|
+      unless file.nil?
+        tag = file.id3v2_tag
+
+        tag.frame_list.each do |frame|
+          frame_id = translate_id3_frame_id(frame.frame_id)
+
+          song[frame_id] = frame.to_string if frame_id
+        end
+
+        song[:audio_properties] = {
+          bitrate: file.audio_properties.bitrate,
+          channels: file.audio_properties.channels,
+          length: file.audio_properties.length,
+          sample_rate: file.audio_properties.sample_rate,
+        }
+      end
+    end
+
+    song
+  end
+
+  def translate_id3_frame_id(frame_id)
+    frame_ids = {
+      'TIT2' => :title,
+      'TALB' => :album,
+      'TDRC' => :year,
+      'TPE1' => :artist,
+      'TRCK' => :track,
+      'TPOS' => :disc,
+      'COMM' => :comment,
+      'TCON' => :genre
+    }
+
+    frame_ids[frame_id]
   end
 end
