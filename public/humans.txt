@@ -21,10 +21,10 @@
 
 /* SITE */
   Created On: 2012/06/11
-  Last Updated: 2013/07/12
+  Last Updated: 2016/02/11
   Language: English
   Doctype: HTML5
-  Lovingly Made In: RubyMine 5.4.3.2.1
-  Lovingly Made On: OSX 10.7.5
+  Lovingly Made In: Emacs 24.5.1
+  Lovingly Made On: OSX 10.11.3
   Lovingly Made With: Ruby, Sinatra, ERB
   Source Available At: https://github.com/seaneshbaugh/media_streamer
