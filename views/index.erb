@@ -1,8 +1,13 @@
 <div class="row">
   <div class="twelve columns">
+    <input id="artists-search" placeholder="Search Artists" type="text">
+  </div>
+</div>
+<div class="row">
+  <div class="twelve columns">
     <ul id="artists">
       <% @directories.each do |directory| %>
-        <li class="artist">
+        <li class="artist" data-name="<%= directory.split('/').last.downcase %>">
           <a href="<%= make_path(directory.split('/').last) %>"><%= directory.split('/').last %></a> (<%= (@genres[directory.split('/').last] || '').strip %>)
         </li>
       <% end %>

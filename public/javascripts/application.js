@@ -1,5 +1,25 @@
 onReady(function() {
-    var songLinks, audio, volume, loop, randomOff, randomSong, randomAlbum, skipRandom;
+    var artistsSearch, audio, songLinks, volume, loop, randomOff, randomSong, randomAlbum, skipRandom;
+
+    artistsSearch = document.getElementById("artists-search");
+
+    if (artistsSearch) {
+      artistsSearch.addEventListener("input", function(event) {
+        if (event.target.value !== "") {
+          Array.prototype.slice.call(document.querySelectorAll("li.artist:not([data-name*='" + event.target.value.toLowerCase() + "'])"), 0).forEach(function(artist) {
+            artist.classList.add("hidden");
+          });
+
+          Array.prototype.slice.call(document.querySelectorAll("li.artist[data-name*='" + event.target.value.toLowerCase() + "']"), 0).forEach(function(artist) {
+            artist.classList.remove("hidden");
+          });
+        } else {
+          Array.prototype.slice.call(document.querySelectorAll("li.artist"), 0).forEach(function(artist) {
+            artist.classList.remove("hidden");
+          });
+        }
+      }, false);
+    }
 
     audio = document.createElement("audio");
 
