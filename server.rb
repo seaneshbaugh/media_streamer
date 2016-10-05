@@ -433,7 +433,7 @@ class MediaStreamer < Sinatra::Base
 
                 puts tag.genre
 
-                genres[artist] = tag.genre
+                genres[artist] = tag.genre || 'Unknown'
 
                 genre_cache_file.puts "#{artist} -:-:- #{tag.genre}"
               end
