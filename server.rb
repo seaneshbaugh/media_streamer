@@ -351,7 +351,7 @@ class MediaStreamer < Sinatra::Base
     files = []
 
     settings.allowed_file_types.each do |file_type|
-      files += Dir[File.join(pwd, "*.#{file_type}")]
+      files += Dir[File.join(pwd.gsub(/[\\\{\}\[\]\*\?]/) { |x| "\\" + x }, "*.#{file_type}")]
     end
 
     files.delete_if { |file| check_blacklist(file.split('/').last) }.sort
