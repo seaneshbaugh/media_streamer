@@ -6,12 +6,15 @@ Requirements
 ------------
 
 #### Ruby Version
-Ruby 2.0.0-p247 or higher (although, any 1.9.3 or 2.0.0 version should work).
+Ruby 2.1.5 or higher (although, anything from 1.9.3 on should work but I won't guarantee it)
 
 #### Gems
 * activesupport
+* eventmachine
+* multi_json
 * sinatra
 * sinatra-contrib
+* taglib-ruby
 * thin
 
 #### Libraries
@@ -85,7 +88,7 @@ Currently the only settings specific to this application are `music_directory`, 
 HTML5 Audio and Browser Support
 -------------------------------
 
-This application will now attempt to use the new [HTML5 audio element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) to play songs in the page. If the browser does not support the audio element then it will fall back to the default behavior of letting the browser decide what to do (which is typically playing the file in the browser). Right now this means browsers that don't support playing the format of your files will not work properly. Check this [comprehensive list of browser support for media types](https://developer.mozilla.org/en-US/docs/HTML/Supported_media_formats#Browser_compatibility) to see if your browser can play a desired format. As of now Chrome or Safari is your best bet for media format support. Since most everyone has their songs encoded in mp3 this effectively rules out Firefox on non-Windows platforms.
+This application will attempt to use the [HTML5 audio element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) to play songs in the page. If the browser does not support the audio element then it will fall back to the default behavior of letting the browser decide what to do (which is typically playing the file in the browser). Right now this means browsers that don't support playing the format of your files will not work properly. Check this [comprehensive list of browser support for media types](https://developer.mozilla.org/en-US/docs/HTML/Supported_media_formats#Browser_compatibility) to see if your browser can play a desired format. As of now Chrome or Safari is your best bet for media format support. Since most everyone has their songs encoded in mp3 this effectively rules out Firefox on non-Windows platforms.
 
 Notes
 -----
