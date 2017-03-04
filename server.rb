@@ -366,7 +366,10 @@ class MediaStreamer < Sinatra::Base
   end
 
   def get_directories(pwd)
-    Dir.entries(pwd, { :encoding => 'UTF-8' }).select { |entry| File.directory?(File.join(pwd, entry)) && !(entry == '.' || entry == '..') }.delete_if { |directory| check_blacklist(directory.split('/').last) }
+    Dir.entries(pwd, { :encoding => 'UTF-8' })
+       .select { |entry| File.directory?(File.join(pwd, entry)) && !(entry == '.' || entry == '..') }
+       .delete_if { |directory| check_blacklist(directory.split('/').last) }
+       .sort
   end
 
   def get_files(pwd)
