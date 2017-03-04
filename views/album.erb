@@ -3,10 +3,10 @@
     <img src="<%= make_path(@artist, @album, 'albumart') %>">
   </div>
   <div class="nine columns">
-    <ul id="songs">
-      <% @files.each do |file| %>
+    <ol id="songs">
+      <% @songs.each do |song| %>
         <li class="song">
-          <a href="<%= make_path(@artist, @album, file.split('/').last) %>"><%= file.split('/').last %></a>
+          <a href="<%= song[:url] %>"><%= song[:title] %></a>
         </li>
       <% end %>
     </ul>
@@ -27,6 +27,4 @@
     <button id="skip-random">Skip >></button>
   </div>
 </div>
-<div class="row">
-
-</div>
+<div class="row"></div>

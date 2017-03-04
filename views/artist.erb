@@ -3,6 +3,7 @@
     <ul id="albums">
       <% @directories.each do |directory| %>
         <li class="album">
+          <a href="<%= make_path(@artist, directory.split('/').last) %>"><img src="<%= make_path(@artist, directory.split('/').last, 'albumart') %>"></a>
           <a href="<%= make_path(@artist, directory.split('/').last) %>"><%= directory.split('/').last %></a>
         </li>
       <% end %>

@@ -18,11 +18,13 @@
         <%= partial 'breadcrumbs', { breadcrumbs: @breadcrumbs } %>
       </div>
     </div>
-    <div class="row">
-      <div class="twelve columns">
-        <h1 id="pwd">Listing Contents of <%= @pwd %></h1>
+    <% if @pwd.present? %>
+      <div class="row">
+        <div class="twelve columns">
+          <h1 id="pwd">Listing Contents of <%= @pwd %></h1>
+        </div>
       </div>
-    </div>
+    <% end %>
     <%= yield %>
   </div>
 </body>

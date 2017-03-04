@@ -554,12 +554,11 @@ a {
   color: #0000ee;
 }
 
-ul {
-  list-style: disc inside;
+ol {
   margin-bottom: 0;
 }
 
-ul li {
+ol li {
   margin-bottom: 0;
 }
 
@@ -581,6 +580,19 @@ ul li {
   font-size: 2.0rem;
   margin-bottom: 1.0rem;
   word-break: break-all;
+}
+
+#albums {
+  list-style: none;
+}
+
+#albums .album {
+  margin-bottom: 5px;
+}
+
+#albums .album img {
+  max-height: 75px;
+  max-width: 75px;
 }
 
 #album-art {
@@ -616,6 +628,33 @@ ul li {
 
 #skip-random {
   display: none;
+}
+
+.covers {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
+  -webkit-flex-flow: row wrap;
+}
+
+.cover {
+  height: 200px;
+  line-height: 200px;
+  margin-top: 5px;
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+  width: 200px;
+}
+
+.cover img {
+  max-height: 100%;
+  max-width: 100%;
 }
 
 @media (min-width: 400px) {}

@@ -1,14 +1,26 @@
 <div class="row">
-  <div class="twelve columns">
+  <form id="search-form" action="javascript:void(0);" class="twelve columns">
     <input id="artists-search" placeholder="Search Artists" type="text">
-  </div>
+    <select id="genre-filter">
+      <option value="">Filter by Genre</option>
+      <option value="" disabled></option>
+      <% @genres.map(&:last).uniq.sort.each do |genre| %>
+        <option value="<%= genre %>"><%= genre %></option>
+      <% end %>
+    </select>
+    <button id="clear-search" class="button-primary" type="reset">Clear</button
+  </form>
 </div>
 <div class="row">
   <div class="twelve columns">
     <ul id="artists">
       <% @directories.each do |directory| %>
-        <li class="artist" data-name="<%= directory.split('/').last.downcase %>">
-          <a href="<%= make_path(directory.split('/').last) %>"><%= directory.split('/').last %></a> (<%= (@genres[directory.split('/').last] || '').strip %>)
+        <%
+          artist = directory.split('/').last
+          genre = (@genres[artist] || 'Unknown').strip
+        %>
+        <li class="artist" data-name="<%= artist.downcase %>" data-genre="<%= genre %>">
+          <a href="<%= make_path(artist) %>"><%= artist %></a> (<%= genre %>)
         </li>
       <% end %>
     </ul>

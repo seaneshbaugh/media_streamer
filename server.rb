@@ -170,6 +170,24 @@ class MediaStreamer < Sinatra::Base
     end
   end
 
+  get '/covers/?' do
+    unless File.directory?(settings.music_directory)
+      status 404
+    end
+
+    add_breadcrumb(settings.music_directory)
+
+    artists = get_directories(settings.music_directory)
+
+    @albums = artists.each_with_object([]) do |artist, acc|
+      get_directories(File.join(settings.music_directory, artist)).each do |album|
+        acc << [artist, album]
+      end
+    end
+
+    erb :covers
+  end
+
   get '/:artist/?' do
     @artist = params[:artist]
 
@@ -256,7 +274,11 @@ class MediaStreamer < Sinatra::Base
 
         add_breadcrumb(@album)
 
-        @files = get_files(@pwd)
+        @songs = get_files(@pwd).map do |file|
+          file_name = file.split('/').last
+
+          get_tags(file).merge(url: "#{base_url}/#{@artist}/#{@album}/#{file_name}")
+        end
 
         erb :album
       else
@@ -385,22 +407,6 @@ class MediaStreamer < Sinatra::Base
           @genres[artist] = genre.present? ? genre.chomp : 'Unknown'
         end
       else
-        # lines.each do |line|
-        #   artist, genre = line.split(' -:-:- ')
-        #
-        #   unless @directories.include?(artist)
-        #     puts "#{artist} is missing!"
-        #   end
-        # end
-        #
-        # artists = lines.map { |line| line.split(' -:-:- ').first }
-        #
-        # @directories.each do |directory|
-        #   unless artists.include?(directory)
-        #     puts "#{directory} is missing!"
-        #   end
-        # end
-
         cache_genres(genre_cache_file_path)
       end
     else

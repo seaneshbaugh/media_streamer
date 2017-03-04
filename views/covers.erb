@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="twelve columns">
+    <div class="covers">
+      <% @albums.first(100).each_slice(6) do |slice| %>
+        <% slice.each do |(artist, album)| %>
+          <div class="cover">
+            <a href="<%= make_path(artist, album) %>"><img src="<%= make_path(artist, album, 'albumart') %>"></a>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script>
+function getScrollXY() {
+  var scrollX, scrollY;
+
+  scrollX = 0;
+
+  scrollY = 0;
+
+  if (typeof(window.pageYOffset) === "number") {
+    scrollX = window.pageXOffset;
+
+    scrollY = window.pageYOffset;
+  } else {
+    if (document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+      scrollX = document.body.scrollLeft;
+
+      scrollY = document.body.scrollTop;
+    } else {
+      if (document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+        scrollX = document.documentElement.scrollLeft;
+
+        scrollY = document.documentElement.scrollTop;
+      }
+    }
+  }
+
+  return [scrollX, scrollY];
+}
+
+function getDocumentHeight() {
+  return Math.max(document.body.scrollHeight,
+                  document.documentElement.scrollHeight,
+                  document.body.offsetHeight,
+                  document.documentElement.offsetHeight,
+                  document.body.clientHeight,
+                  document.documentElement.clientHeight);
+}
+
+var covers = <%= @albums.drop(100).inspect %>;
+
+var index = 0;
+
+document.addEventListener("scroll", function(event) {
+  var coversElement, coversFragment;
+
+  if (getDocumentHeight() == getScrollXY()[1] + window.innerHeight) {
+    if (index < covers.length) {
+      coversFragment = document.createDocumentFragment();
+
+      covers.slice(index, index + 100).forEach(function(cover) {
+        var imgElement, aElement, coverElement;
+
+        imgElement = document.createElement("img");
+
+        imgElement.src = [""].concat(cover).concat(["albumart"]).join("/").replace("#", "%23").replace("%", "%25");
+
+        aElement = document.createElement("a");
+
+        aElement.href = [""].concat(cover).join("/").replace("#", "%23").replace("%", "%25");
+
+        aElement.appendChild(imgElement);
+
+        coverElement = document.createElement("div");
+
+        coverElement.classList.add("cover");
+
+        coverElement.appendChild(aElement);
+
+        coversFragment.appendChild(coverElement);
+      });
+
+      coversElement = document.querySelector(".covers");
+
+      coversElement.appendChild(coversFragment);
+
+      index += 100;
+    }
+  }
+});
+</script>

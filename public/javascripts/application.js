@@ -1,24 +1,66 @@
+function onReady(completed) {
+    if (document.readyState === "complete") {
+        setTimeout(completed);
+    } else {
+        document.addEventListener("DOMContentLoaded", completed, false);
+    }
+}
+
+function filterArtists(name, genre) {
+  var showQuery, hideQuery;
+
+  showQuery = "li.artist";
+
+  hideQuery = "li.artist";
+
+  if (name) {
+    showQuery += "[data-name*='" + name.toLowerCase() + "']";
+
+    hideQuery += ":not([data-name*='" + name.toLowerCase() + "'])";
+  }
+
+  if (genre) {
+    showQuery += "[data-genre='" + genre + "']";
+
+    hideQuery += ":not([data-genre='" + genre + "'])";
+  }
+
+  if (name || genre) {
+    Array.prototype.slice.call(document.querySelectorAll("li.artist"), 0).forEach(function(artist) {
+      artist.classList.add("hidden");
+    });
+  }
+
+  Array.prototype.slice.call(document.querySelectorAll(showQuery), 0).forEach(function(artist) {
+    artist.classList.remove("hidden");
+  });
+}
+
 onReady(function() {
-    var artistsSearch, audio, songLinks, volume, loop, randomOff, randomSong, randomAlbum, skipRandom;
+    var artistsSearch, genreFilter, searchForm, audio, songLinks, volume, loop, randomOff, randomSong, randomAlbum, skipRandom;
+
+    searchForm = document.getElementById("search-form");
 
     artistsSearch = document.getElementById("artists-search");
 
-    if (artistsSearch) {
-      artistsSearch.addEventListener("input", function(event) {
-        if (event.target.value !== "") {
-          Array.prototype.slice.call(document.querySelectorAll("li.artist:not([data-name*='" + event.target.value.toLowerCase() + "'])"), 0).forEach(function(artist) {
-            artist.classList.add("hidden");
-          });
+    genreFilter = document.getElementById("genre-filter");
 
-          Array.prototype.slice.call(document.querySelectorAll("li.artist[data-name*='" + event.target.value.toLowerCase() + "']"), 0).forEach(function(artist) {
-            artist.classList.remove("hidden");
-          });
-        } else {
-          Array.prototype.slice.call(document.querySelectorAll("li.artist"), 0).forEach(function(artist) {
-            artist.classList.remove("hidden");
-          });
-        }
+    if (searchForm && artistsSearch && genreFilter) {
+      searchForm.addEventListener("reset", function(event) {
+        setTimeout(function() {
+          filterArtists("", "");
+        });
+      });
+
+      artistsSearch.addEventListener("input", function(event) {
+        filterArtists(artistsSearch.value, genreFilter.value);
       }, false);
+
+      genreFilter.addEventListener("change", function(event) {
+        filterArtists(artistsSearch.value, genreFilter.value);
+      }, false);
+
+      filterArtists(artistsSearch.value, genreFilter.value);
     }
 
     audio = document.createElement("audio");
@@ -309,12 +351,4 @@ function randomAlbumJump(playSong) {
     };
 
     artistsApiRequest.send();
-}
-
-function onReady(completed) {
-    if (document.readyState === "complete") {
-        setTimeout(completed);
-    } else {
-        document.addEventListener("DOMContentLoaded", completed, false);
-    }
 }
