@@ -1,12 +1,10 @@
 <div class="row">
   <div class="twelve columns">
     <div class="covers">
-      <% @albums.first(100).each_slice(6) do |slice| %>
-        <% slice.each do |(artist, album)| %>
-          <div class="cover">
-            <a href="<%= make_path(artist, album) %>"><img src="<%= make_path(artist, album, 'albumart') %>"></a>
-          </div>
-        <% end %>
+      <% @albums.first(100).each do |(artist, album)| %>
+        <div class="cover">
+          <a href="<%= make_path(artist, album) %>"><img src="<%= make_path(artist, album, 'albumart') %>"></a>
+        </div>
       <% end %>
     </div>
   </div>
