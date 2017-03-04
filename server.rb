@@ -171,9 +171,7 @@ class MediaStreamer < Sinatra::Base
   end
 
   get '/covers/?' do
-    unless File.directory?(settings.music_directory)
-      status 404
-    end
+    status 404 unless File.directory?(settings.music_directory)
 
     add_breadcrumb(settings.music_directory)
 
@@ -227,28 +225,28 @@ class MediaStreamer < Sinatra::Base
 
         if @files.present?
           case @files.first.split('.').last
-            when 'mp3'
-              TagLib::MPEG::File.open(@files.first) do |file|
-                tag = file.id3v2_tag
+          when 'mp3'
+            TagLib::MPEG::File.open(@files.first) do |file|
+              tag = file.id3v2_tag
 
-                cover = tag.frame_list('APIC').first
+              cover = tag.frame_list('APIC').first
 
-                if cover
-                  content_type cover.mime_type
+              if cover
+                content_type cover.mime_type
 
-                  cover.picture
-                else
-                  send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
-                end
+                cover.picture
+              else
+                send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
               end
-            when 'm4a'
-              #TODO: Get album art for M4A files.
-              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
-            when 'ogg'
-              #TODO: Get album art for OGG files.
-              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
-            else
-              send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+            end
+          when 'm4a'
+            # TODO: Get album art for M4A files.
+            send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+          when 'ogg'
+            # TODO: Get album art for OGG files.
+            send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
+          else
+            send_file File.expand_path('images/no-album-art.jpg', settings.public_folder)
           end
         end
       else
@@ -314,29 +312,29 @@ class MediaStreamer < Sinatra::Base
 
     @pwd = settings.music_directory
 
-    if @request_path.length > 2 && File.directory?(File.join(@pwd, CGI::unescape(@request_path[1])))
-      @pwd = File.join(@pwd, CGI::unescape(@request_path[1]))
+    if @request_path.length > 2 && File.directory?(File.join(@pwd, CGI.unescape(@request_path[1])))
+      @pwd = File.join(@pwd, CGI.unescape(@request_path[1]))
 
-      @artist = CGI::unescape(@request_path[1])
+      @artist = CGI.unescape(@request_path[1])
 
-      if @request_path.length > 3 && File.directory?(File.join(@pwd, CGI::unescape(@request_path[2])))
-        @pwd = File.join(@pwd, CGI::unescape(@request_path[2]))
+      if @request_path.length > 3 && File.directory?(File.join(@pwd, CGI.unescape(@request_path[2])))
+        @pwd = File.join(@pwd, CGI.unescape(@request_path[2]))
 
-        @album = CGI::unescape(@request_path[2])
+        @album = CGI.unescape(@request_path[2])
       end
     end
 
     if @album.blank?
-      @closest = FuzzyMatch::find_closest_match CGI::unescape(@request_path.last), get_directories(@pwd)
+      @closest = FuzzyMatch.find_closest_match CGI.unescape(@request_path.last), get_directories(@pwd)
     else
       @files = get_files(@pwd)
 
       @files.each { |file| file.slice! "#{@pwd}/" }
 
-      @closest = FuzzyMatch::find_closest_match CGI::unescape(@request_path.last), @files
+      @closest = FuzzyMatch.find_closest_match CGI.unescape(@request_path.last), @files
     end
 
-    erb :'404', :layout => false
+    erb :'404', layout: false
   end
 
   helpers do
@@ -345,7 +343,7 @@ class MediaStreamer < Sinatra::Base
 
       template = ('_' + template.to_s).to_sym
 
-      erb template, { :layout => false }, locals
+      erb template, { layout: false }, locals
     end
 
     def base_url
@@ -357,16 +355,16 @@ class MediaStreamer < Sinatra::Base
     end
   end
 
-  run! if app_file == $0
+  run! if app_file == $PROGRAM_NAME
 
   protected
 
   def check_blacklist(*directory_or_file_names)
-    (settings.file_blacklist & directory_or_file_names.flatten).length != 0
+    !(settings.file_blacklist & directory_or_file_names.flatten).empty?
   end
 
   def get_directories(pwd)
-    Dir.entries(pwd, { :encoding => 'UTF-8' })
+    Dir.entries(pwd, encoding: 'UTF-8')
        .select { |entry| File.directory?(File.join(pwd, entry)) && !(entry == '.' || entry == '..') }
        .delete_if { |directory| check_blacklist(directory.split('/').last) }
        .sort
@@ -376,7 +374,7 @@ class MediaStreamer < Sinatra::Base
     files = []
 
     settings.allowed_file_types.each do |file_type|
-      files += Dir[File.join(pwd.gsub(/[\\\{\}\[\]\*\?]/) { |x| "\\" + x }, "*.#{file_type}")]
+      files += Dir[File.join(pwd.gsub(/[\\\{\}\[\]\*\?]/) { |x| '\\' + x }, "*.#{file_type}")]
     end
 
     files.delete_if { |file| check_blacklist(file.split('/').last) }.sort
@@ -385,9 +383,7 @@ class MediaStreamer < Sinatra::Base
   def add_breadcrumb(breadcrumb)
     @breadcrumbs ||= []
 
-    if breadcrumb.present?
-      @breadcrumbs << breadcrumb
-    end
+    @breadcrumbs << breadcrumb if breadcrumb.present?
 
     @breadcrumbs
   end
@@ -462,7 +458,7 @@ class MediaStreamer < Sinatra::Base
   def get_tags(file_path)
     return {} unless File.file?(file_path)
 
-    return {} unless file_path.split('.').last.downcase == 'mp3'
+    return {} unless file_path.split('.').last.casecmp('mp3') == 0
 
     song = {}
 
@@ -480,7 +476,7 @@ class MediaStreamer < Sinatra::Base
           bitrate: file.audio_properties.bitrate,
           channels: file.audio_properties.channels,
           length: file.audio_properties.length,
-          sample_rate: file.audio_properties.sample_rate,
+          sample_rate: file.audio_properties.sample_rate
         }
       end
     end

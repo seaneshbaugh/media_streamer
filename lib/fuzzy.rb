@@ -1,5 +1,4 @@
-#http://stackoverflow.com/questions/5859561/getting-the-closest-string-match#answer-5859823
-
+# http://stackoverflow.com/questions/5859561/getting-the-closest-string-match#answer-5859823
 module FuzzyMatch
   def self.find_closest_match(s, a)
     a.map { |b| [levenshtein_distance(s, b), b] }.sort[0][1]
@@ -20,13 +19,11 @@ module FuzzyMatch
       (1..s2.size).each do |j|
         cost = 0
 
-        if s1[i - 1] != s2[j - 1]
-          cost = 1
-        end
+        cost = 1 if s1[i - 1] != s2[j - 1]
 
         d[[i, j]] = [d[[i - 1, j]] + 1, d[[i, j - 1]] + 1, d[[i - 1, j - 1]] + cost].min
 
-        if i > 1 and j > 1 and s1[i - 1] == s2[j - 2] and s1[i - 2] == s2[j - 1]
+        if i > 1 && j > 1 && s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1]
           d[[i, j]] = [d[[i, j]], d[[i - 2, j - 2]] + cost].min
         end
       end
