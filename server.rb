@@ -6,7 +6,7 @@ class MediaStreamer < Sinatra::Base
   configure :development, :production do
     enable :logging
 
-    file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
+    file = File.new(File.join(settings.root, 'log', "#{settings.environment}.log"), 'a+')
 
     file.sync = true
 
@@ -15,7 +15,7 @@ class MediaStreamer < Sinatra::Base
 
   register Sinatra::ConfigFile
 
-  config_file 'config/settings.yml'
+  config_file File.join('config', 'settings.yml')
 
   helpers Sinatra::JSON
 
