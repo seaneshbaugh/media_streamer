@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 
 Bundler.require(:default)
@@ -7,10 +9,10 @@ require 'sinatra/reloader'
 require 'sinatra/json'
 require 'cgi'
 
-Dir["#{File.dirname(__FILE__)}/lib/*.rb"].sort.each do |path|
-  require path
+Dir[File.join('.', 'lib', '*.rb')].sort.each do |path|
+  require_relative path
 end
 
-require File.join(File.dirname(__FILE__), 'server')
+require_relative './server'
 
 run MediaStreamer

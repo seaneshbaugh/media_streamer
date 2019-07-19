@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # http://stackoverflow.com/questions/5859561/getting-the-closest-string-match#answer-5859823
 module FuzzyMatch
   def self.find_closest_match(s, a)

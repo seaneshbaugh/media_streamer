@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MediaStreamer < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
