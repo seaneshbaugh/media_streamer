@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 ruby '2.6.2'
 
-gem 'activesupport', '5.2.3', require: 'active_support/all'
+gem 'activesupport', '5.2.4.3', require: 'active_support/all'
 gem 'eventmachine', '1.2.7'
 gem 'multi_json', '1.13.1'
 gem 'sinatra', '2.0.5'
